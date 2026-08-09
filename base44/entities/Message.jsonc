@@ -1,0 +1,149 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID of the conversation this message belongs to"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "User ID of the sender"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Display name of the sender"
+    },
+    "content": {
+      "type": "string",
+      "description": "Original message content"
+    },
+    "translated_content": {
+      "type": "string",
+      "description": "Translated message content for recipient"
+    },
+    "original_language": {
+      "type": "string",
+      "description": "Detected language code"
+    },
+    "target_language": {
+      "type": "string",
+      "description": "Target language code used for translated_content"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "voice",
+        "video",
+        "image",
+        "file"
+      ],
+      "default": "text"
+    },
+    "audio_url": {
+      "type": "string"
+    },
+    "video_url": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_size": {
+      "type": "number"
+    },
+    "transcript": {
+      "type": "string"
+    },
+    "translated_transcript": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string"
+    },
+    "reply_to_id": {
+      "type": "string"
+    },
+    "reply_to_content": {
+      "type": "string"
+    },
+    "reply_to_sender": {
+      "type": "string"
+    },
+    "reactions": {
+      "type": "string",
+      "description": "JSON string: {emoji: [userId,...]}"
+    },
+    "read_by": {
+      "type": "string",
+      "description": "JSON array of user IDs who read this message"
+    },
+    "deleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "edited": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_guide": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for Forge Guide system messages"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO timestamp after which this message should be deleted"
+    }
+  },
+  "rls": {
+    "create": {
+      "data.sender_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  },
+  "required": []
+}

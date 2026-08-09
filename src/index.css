@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Indigo editorial palette (shadcn HSL tokens) */
+    --background: 220 14% 98%;          /* #F9FAFB */
+    --foreground: 222 39% 11%;          /* #111827 */
+    --card: 0 0% 100%;                  /* #FFFFFF */
+    --card-foreground: 222 39% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 39% 11%;
+    --primary: 243 75% 59%;             /* #4F46E5 */
+    --primary-foreground: 0 0% 100%;    /* #FFFFFF */
+    --secondary: 228 97% 89%;           /* #C7D2FE */
+    --secondary-foreground: 243 75% 45%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 228 97% 89%;              /* #C7D2FE */
+    --accent-foreground: 243 75% 40%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 60% 92%;
+    --input: 228 60% 92%;
+    --ring: 243 75% 59%;                /* #4F46E5 */
+    --radius: 1rem;
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 39% 11%;
+    --sidebar-primary: 243 75% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 228 97% 89%;
+    --sidebar-accent-foreground: 243 75% 40%;
+    --sidebar-border: 228 60% 92%;
+    --sidebar-ring: 243 75% 59%;
+
+    /* Glass surfaces */
+    --glass-bg: rgba(255, 255, 255, 0.70);
+    --glass-bg-strong: rgba(255, 255, 255, 0.92);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.50);
+    --glass-border: rgba(199, 210, 254, 0.45);
+    --glass-border-strong: rgba(199, 210, 254, 0.70);
+    --glass-hover: rgba(249, 250, 251, 0.80);
+    --shine: rgba(255, 255, 255, 0.40);
+    --dot-color: rgba(79, 70, 229, 0.10);
+
+    /* Message bubbles */
+    --bubble-incoming: rgba(255, 255, 255, 0.96);
+    --bubble-outgoing: rgba(199, 210, 254, 0.55);
+
+    /* Theme system: Indigo Mist (light) / Indigo Night (dark) */
+    --background: #F9FAFB;
+    --foreground: #111827;
+    --card-bg: rgba(255, 255, 255, 0.78);
+    --card-border: rgba(199, 210, 254, 0.50);
+    --shadow-color: rgba(17, 24, 39, 0.08);
+    --primary: #4F46E5;
+    --accent-pink: #C7D2FE;
+    --accent-purple: #6366F1;
+    --muted: #6B7280;
+    --glass-blur: 16px;
+    --header-bg: rgba(255, 255, 255, 0.72);
+    --header-border: rgba(199, 210, 254, 0.45);
+    --surface-bg: rgba(255, 255, 255, 0.98);
+    --surface-border: rgba(199, 210, 254, 0.50);
+    --orb-1: rgba(79, 70, 229, 0.12);
+    --orb-2: rgba(199, 210, 254, 0.35);
+    --orb-3: rgba(99, 102, 241, 0.14);
+  }
+
+  .theme-dark {
+    --background: #111827;
+    --foreground: #F9FAFB;
+    --card-bg: rgba(31, 41, 55, 0.60);
+    --card-border: rgba(99, 102, 241, 0.22);
+    --shadow-color: rgba(0, 0, 0, 0.45);
+    --primary: #6366F1;
+    --accent-pink: #C7D2FE;
+    --accent-purple: #818CF8;
+    --muted: #9CA3AF;
+    --glass-blur: 14px;
+    --header-bg: rgba(17, 24, 39, 0.72);
+    --header-border: rgba(99, 102, 241, 0.22);
+    --surface-bg: rgba(31, 41, 55, 0.96);
+    --surface-border: rgba(99, 102, 241, 0.25);
+    --orb-1: rgba(99, 102, 241, 0.30);
+    --orb-2: rgba(199, 210, 254, 0.18);
+    --orb-3: rgba(129, 140, 248, 0.20);
+  }
+
+  .dark {
+    --background: 222 39% 11%;
+    --foreground: 220 14% 98%;
+    --card: 222 30% 18%;
+    --card-foreground: 220 14% 98%;
+    --popover: 222 30% 18%;
+    --popover-foreground: 220 14% 98%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 228 60% 30%;
+    --secondary-foreground: 228 97% 89%;
+    --muted: 222 20% 24%;
+    --muted-foreground: 220 9% 70%;
+    --accent: 228 60% 30%;
+    --accent-foreground: 228 97% 89%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 20% 24%;
+    --input: 222 20% 24%;
+    --ring: 243 75% 59%;
+    --sidebar-background: 222 30% 18%;
+    --sidebar-foreground: 220 14% 98%;
+    --sidebar-primary: 243 75% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 228 60% 30%;
+    --sidebar-accent-foreground: 228 97% 89%;
+    --sidebar-border: 222 20% 24%;
+    --sidebar-ring: 243 75% 59%;
+    --glass-bg: rgba(31, 41, 55, 0.60);
+    --glass-bg-strong: rgba(31, 41, 55, 0.92);
+    --glass-bg-subtle: rgba(31, 41, 55, 0.40);
+    --glass-border: rgba(99, 102, 241, 0.22);
+    --glass-border-strong: rgba(99, 102, 241, 0.45);
+    --glass-hover: rgba(45, 55, 72, 0.80);
+    --shine: rgba(255, 255, 255, 0.12);
+    --dot-color: rgba(129, 140, 248, 0.14);
+    --bubble-incoming: rgba(31, 41, 55, 0.90);
+    --bubble-outgoing: rgba(99, 102, 241, 0.45);
+  }
+}
+
+@layer components {
+  .glass        { background: var(--glass-bg);        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
+  .glass-strong { background: var(--glass-bg-strong); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid var(--glass-border-strong); }
+  .glass-subtle { background: var(--glass-bg-subtle); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); }
+
+  .dot-grid {
+    background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+}
+
+@layer utilities {
+  .font-header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .glass-panel {
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    @apply transition-all duration-300;
+  }
+}
+
+/* Indigo background — prevent any flash */
+html {
+  background: var(--background);
+  min-height: 100dvh;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300 antialiased;
+    font-family: 'Inter', sans-serif;
+    min-height: 100dvh;
+  }
+}
+
+/* Mobile */
+html, body {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, [role="button"] {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(79, 70, 229, 0.18); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(79, 70, 229, 0.32); }
+
+/* Themed ambient orbs */
+.theme-orb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; transition: background 0.6s ease, opacity 0.6s ease; }
+.theme-orb-1 { width: 340px; height: 340px; top: -80px; right: -60px; background: var(--orb-1); }
+.theme-orb-2 { width: 300px; height: 300px; bottom: 8%; left: -80px; background: var(--orb-2); }
+.theme-orb-3 { width: 260px; height: 260px; top: 38%; right: 18%; background: var(--orb-3); }

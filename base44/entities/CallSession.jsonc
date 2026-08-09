@@ -1,0 +1,123 @@
+{
+  "name": "CallSession",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string"
+    },
+    "caller_id": {
+      "type": "string"
+    },
+    "caller_name": {
+      "type": "string"
+    },
+    "callee_id": {
+      "type": "string"
+    },
+    "callee_name": {
+      "type": "string"
+    },
+    "call_type": {
+      "type": "string",
+      "enum": [
+        "audio",
+        "video"
+      ],
+      "default": "audio"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ringing",
+        "active",
+        "ended",
+        "declined",
+        "missed",
+        "busy"
+      ],
+      "default": "ringing"
+    },
+    "offer_sdp": {
+      "type": "string",
+      "description": "WebRTC SDP offer from caller"
+    },
+    "answer_sdp": {
+      "type": "string",
+      "description": "WebRTC SDP answer from callee"
+    },
+    "ice_candidates_caller": {
+      "type": "string",
+      "description": "JSON array \u2014 trickle ICE from caller"
+    },
+    "ice_candidates_callee": {
+      "type": "string",
+      "description": "JSON array \u2014 trickle ICE from callee"
+    },
+    "caller_heartbeat": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last heartbeat from caller"
+    },
+    "callee_heartbeat": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last heartbeat from callee"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "rls": {
+    "create": {
+      "data.caller_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.caller_id": "{{user.id}}"
+        },
+        {
+          "data.callee_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.caller_id": "{{user.id}}"
+        },
+        {
+          "data.callee_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  },
+  "required": []
+}

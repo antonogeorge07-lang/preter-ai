@@ -1,8 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from '@/App.jsx'
-import '@/index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <App />
-)
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  
+    
+      
+    
+  
+);

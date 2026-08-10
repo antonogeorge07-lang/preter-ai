@@ -9,9 +9,9 @@ const convexUrl = import.meta.env.VITE_CONVEX_URL || "https://good-impala-784.eu
 const convex = new ConvexReactClient(convexUrl);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ConvexProvider client={convex}>
-      <App />
-    </ConvexProvider>
-  </React.StrictMode>
+  
+    
+      
+    
+  
 );

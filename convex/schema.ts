@@ -1,4 +1,4 @@
-import { defineSchema, defineTable } from "convex/schema";
+import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
@@ -15,6 +15,16 @@ export default defineSchema({
   })
     .index("by_email", ["email"])
     .index("by_username", ["username"]),
+
+  conversations: defineTable({
+    participantIds: v.array(v.string()),
+    title: v.optional(v.string()),
+    isGroup: v.optional(v.boolean()),
+    pinnedUserIds: v.optional(v.string()),
+    archivedUserIds: v.optional(v.string()),
+    mutedUserIds: v.optional(v.string()),
+    typingUserIds: v.optional(v.string()),
+  }),
 
   messages: defineTable({
     conversationId: v.string(),

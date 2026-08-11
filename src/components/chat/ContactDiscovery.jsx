@@ -1,113 +1,118 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Users, Search, MessageSquare } from 'lucide-react';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Search, AtSign, UserPlus, Loader2, ShieldAlert } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 export default function ContactDiscovery({ isOpen, onClose, currentUser, onStartConversation }) {
-  const [users, setUsers] = useState([]);
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const cleanSearch = searchQuery.trim().toLowerCase().replace(/^@/, "");
 
-  useEffect(() => {
-    if (!isOpen) return;
-    setLoading(true);
-    db.entities.User.list('full_name', 100)
-      .then(records => {
-        setUsers(records.filter(r => r.id !== currentUser?.id && r.full_name));
-      })
-      .catch(() => setUsers([]))
-      .finally(() => setLoading(false));
-  }, [isOpen, currentUser?.id]);
-
-  const filtered = users.filter(u =>
-    !query.trim() || u.full_name?.toLowerCase().includes(query.toLowerCase())
+  // Convex lookup by discoverable username
+  const searchResult = useQuery(
+    api.users.lookupUserByUsername,
+    cleanSearch.length > 0 ? { username: cleanSearch } : "skip"
   );
 
-  const isOnline = (u) => {
-    if (!u.updated_date) return false;
-    return (Date.now() - new Date(u.updated_date).getTime()) < 300000;
-  };
+  const loading = cleanSearch.length > 0 && searchResult === undefined;
+
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
         <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4"
-          onClick={onClose}
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-md rounded-3xl p-6 shadow-2xl overflow-hidden"
+          style={{ background: "var(--surface-bg)", border: "1px solid var(--surface-border)" }}
         >
-          <motion.div
-            initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            onClick={e => e.stopPropagation()}
-            className="w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl"
-            style={{ background: 'var(--surface-bg)', border: '1px solid var(--surface-border)' }}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--surface-border)' }}>
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-                <h2 className="font-semibold text-base font-heading" style={{ color: 'var(--foreground)' }}>
-                  People on Preter
-                </h2>
-              </div>
-              <button onClick={onClose} className="p-1.5 rounded-xl transition-colors" style={{ color: 'var(--muted)' }}>
-                <X className="w-4 h-4" />
-              </button>
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="text-lg font-bold font-heading" style={{ color: "var(--foreground)" }}>Find People</h2>
+              <p className="text-xs text-muted-foreground">Search users by their @username handle</p>
             </div>
+            <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-black/5 transition-colors" style={{ color: "var(--muted)" }}>
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-            {/* Search */}
-            <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--surface-border)' }}>
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
-                style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)' }}>
-                <Search className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--muted)' }} />
-                <input
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  placeholder="Search by name..."
-                  className="flex-1 bg-transparent text-sm focus:outline-none"
-                  style={{ color: 'var(--foreground)' }}
-                />
+          <div className="relative mb-6">
+            <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
+            <input
+              type="text"
+              autoFocus
+              placeholder="Search username (e.g. alex)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-2xl py-3 pl-10 pr-4 text-sm font-mono focus:outline-none transition-all"
+              style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)", color: "var(--foreground)" }}
+            />
+          </div>
+
+          <div className="min-h-[160px] flex flex-col justify-center">
+            {loading ? (
+              <div className="flex flex-col items-center py-6 gap-2">
+                <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+                <p className="text-xs text-muted-foreground">Searching network...</p>
               </div>
-            </div>
-
-            {/* List */}
-            <div className="overflow-y-auto" style={{ maxHeight: '55vh' }}>
-              {loading && (
-                <p className="text-center py-8 text-sm" style={{ color: 'var(--muted)' }}>Loading...</p>
-              )}
-              {!loading && filtered.length === 0 && (
-                <p className="text-center py-8 text-sm" style={{ color: 'var(--muted)' }}>No registered Preter users found</p>
-              )}
-              {filtered.map(u => (
-                <div key={u.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-black/5">
-                  <div className="relative flex-shrink-0">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold"
-                      style={{ background: 'var(--glass-border)', color: 'var(--primary)' }}>
-                      {u.full_name?.[0]?.toUpperCase() || '?'}
-                    </div>
-                    {isOnline(u) && (
-                      <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400" style={{ border: '2px solid var(--paper)' }} />
+            ) : searchResult ? (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-between p-4 rounded-2xl border transition-all"
+                style={{ background: "var(--card-bg)", borderColor: "var(--card-border)" }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-white shadow-md overflow-hidden"
+                    style={{ background: "linear-gradient(135deg, #4F46E5, #6366F1)" }}
+                  >
+                    {searchResult.avatarUrl ? (
+                      <img src={searchResult.avatarUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      (searchResult.fullName || searchResult.username || "U")[0].toUpperCase()
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate" style={{ color: 'var(--foreground)' }}>{u.full_name || 'Unknown'}</p>
-                    <p className="text-xs" style={{ color: 'var(--muted)' }}>{isOnline(u) ? 'Active now' : 'Offline'}</p>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {searchResult.fullName || "Anonymous"}
+                    </h3>
+                    <p className="text-xs font-mono text-indigo-400">@{searchResult.username}</p>
                   </div>
-                  <button
-                    onClick={() => { onStartConversation(u); onClose(); }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all hover:opacity-80"
-                    style={{ background: 'var(--primary)', color: 'var(--paper)' }}>
-                    <MessageSquare className="w-3 h-3" /> Chat
-                  </button>
                 </div>
-              ))}
-            </div>
-            <div className="h-[env(safe-area-inset-bottom)]" />
-          </motion.div>
+
+                <button
+                  onClick={() => {
+                    onStartConversation(searchResult);
+                    onClose();
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 hover:opacity-90"
+                  style={{ background: "var(--primary)", color: "var(--paper)" }}
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  Chat
+                </button>
+              </motion.div>
+            ) : cleanSearch.length > 0 ? (
+              <div className="text-center py-8">
+                <ShieldAlert className="w-8 h-8 mx-auto mb-2 text-muted-foreground/40" />
+                <p className="text-sm text-foreground/80 font-medium">No user found</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  User may not exist or has disabled discovery by username.
+                </p>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Search className="w-8 h-8 mx-auto mb-2 text-muted-foreground/30" />
+                <p className="text-xs text-muted-foreground">Type a username handle above to search for registered contacts.</p>
+              </div>
+            )}
+          </div>
         </motion.div>
-      )}
+      </div>
     </AnimatePresence>
   );
 }

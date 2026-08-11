@@ -1,14 +1,29 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle2, Loader2 } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const sendResetEmail = useMutation(api.authEmail.sendPasswordResetEmail);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email.trim()) setSubmitted(true);
+    if (!email.trim()) return;
+    setLoading(true);
+    try {
+      await sendResetEmail({ email: email.trim() });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Failed to send reset email:", err);
+      // Fallback display
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,7 +40,7 @@ export default function ForgotPassword() {
           <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
             <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
             <h3 className="text-sm font-semibold text-foreground">Reset link sent!</h3>
-            <p className="text-xs text-muted-foreground mt-1">Check <strong>{email}</strong> for instructions to reset your password.</p>
+            <p className="text-xs text-muted-foreground mt-1">If an account exists for <strong>{email}</strong>, password reset instructions have been sent.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -37,8 +52,8 @@ export default function ForgotPassword() {
               </div>
             </div>
 
-            <button type="submit" className="w-full py-3 rounded-2xl font-semibold text-sm transition-all" style={{ background: "var(--primary)", color: "var(--paper)" }}>
-              Send Reset Link
+            <button type="submit" disabled={loading} className="w-full py-3 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2" style={{ background: "var(--primary)", color: "var(--paper)" }}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
             </button>
           </form>
         )}

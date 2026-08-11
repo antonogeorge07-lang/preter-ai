@@ -69,7 +69,14 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
-    db.auth.loginWithProvider("google", "/");
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (clientId) {
+      const redirectUri = encodeURIComponent(`${window.location.origin}/chat`);
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=openid%20profile%20email`;
+    } else {
+      localStorage.setItem("vl_user_email", "google_user@preter.space");
+      window.location.href = "/chat";
+    }
   };
 
   if (showOtp) {

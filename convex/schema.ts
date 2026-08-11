@@ -20,6 +20,7 @@ export default defineSchema({
     participantIds: v.array(v.string()),
     title: v.optional(v.string()),
     isGroup: v.optional(v.boolean()),
+    unreadCounts: v.optional(v.string()),
     pinnedUserIds: v.optional(v.string()),
     archivedUserIds: v.optional(v.string()),
     mutedUserIds: v.optional(v.string()),

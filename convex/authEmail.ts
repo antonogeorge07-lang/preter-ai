@@ -1,14 +1,12 @@
 import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
-// Request password reset token and store/dispatch reset link
 export const sendPasswordResetEmail = mutation({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     const cleanEmail = args.email.trim().toLowerCase();
     if (!cleanEmail) return { success: false, message: "Email is required" };
 
-    // Find user in Convex DB
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("email"), cleanEmail))
@@ -19,12 +17,30 @@ export const sendPasswordResetEmail = mutation({
     if (user) {
       await ctx.db.patch(user._id, {
         resetToken,
-        resetTokenExpires: Date.now() + 3600000, // 1 hour
+        resetTokenExpires: Date.now() + 3600000,
       });
     }
 
-    // In production, integrate Resend or SendGrid API key via environment variables:
-    // await fetch("https://api.resend.com/emails", { ... })
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (resendApiKey) {
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Preter <noreply@preter.space>",
+            to: cleanEmail,
+            subject: "Reset your Preter password",
+            html: `<p>Click <a href="https://preter.space/reset-password?token=${resetToken}">here</a> to reset your password.</p>`,
+          }),
+        });
+      } catch (err) {
+        console.error("Resend dispatch error:", err);
+      }
+    }
 
     return {
       success: true,

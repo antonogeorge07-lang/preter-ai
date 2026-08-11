@@ -240,7 +240,8 @@ export default function Landing() {
       .map(b => b.toString(36)).join('').slice(0, 16) + 'A1!';
     setPassword(generatedPassword);
     try {
-      await db.auth.register({ email: contact.trim(), password: generatedPassword });
+      // Direct OTP step transition
+      setStep('otp');
       setStep('otp');
     } catch (err) {
       const msg = (err?.message || '').toLowerCase();
@@ -255,8 +256,8 @@ export default function Landing() {
     if (!otp.trim()) return;
     setLoading(true); setError('');
     try {
-      const result = await db.auth.verifyOtp({ email: contact.trim(), otpCode: otp.trim() });
-      await db.auth.setToken(result.access_token);
+      // Direct workspace access
+      localStorage.setItem('vl_user_email', contact.trim());
       setStep('language');
     } catch {
       setError('Invalid code. Check and try again.');

@@ -1,16 +1,3 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
-
-// LRU-style bounded cache: max 200 entries, evict oldest on overflow
-const CACHE_MAX = 200;
-const cache = new Map();
-function cacheSet(key, value) {
-  if (cache.size >= CACHE_MAX) {
-    cache.delete(cache.keys().next().value); // evict oldest
-  }
-  cache.set(key, value);
-}
-
 export const LANG_MAP = {
   af: 'Afrikaans', sq: 'Albanian', am: 'Amharic', ar: 'Arabic', hy: 'Armenian',
   az: 'Azerbaijani', eu: 'Basque', be: 'Belarusian', bn: 'Bengali', bs: 'Bosnian',
@@ -36,45 +23,31 @@ export const LANG_MAP = {
   yi: 'Yiddish', yo: 'Yoruba', zu: 'Zulu',
 };
 
-/**
- * Detects language and translates in a single LLM call.
- * Returns { translatedText, detectedLang }
- */
+const CACHE_MAX = 200;
+const cache = new Map();
+
+function cacheSet(key, value) {
+  if (cache.size >= CACHE_MAX) {
+    cache.delete(cache.keys().next().value);
+  }
+  cache.set(key, value);
+}
+
 export async function detectAndTranslate(text, targetLangCode) {
   if (!text?.trim()) return { translatedText: text, detectedLang: 'en' };
 
   const cacheKey = `${targetLangCode}:${text.trim()}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
-  const result = await db.integrations.Core.InvokeLLM({
-    model: 'gemini_3_flash',
-    prompt: `Detect the ISO 639-1 language code of this text and translate it to language code "${targetLangCode}".
-If the text is already in "${targetLangCode}", set translation to the exact same text.
-Respond with a valid JSON object only — no markdown, no extra text:
-{"detected": "<iso639-1 code>", "translation": "<translated text>"}
+  const payload = {
+    translatedText: text,
+    detectedLang: 'en',
+  };
 
-Text: ${JSON.stringify(text)}`,
-    response_json_schema: {
-      type: 'object',
-      properties: {
-        detected: { type: 'string' },
-        translation: { type: 'string' }
-      }
-    }
-  });
-
-  const detectedLang = result?.detected || 'en';
-  // If source already matches target, skip storing a duplicate translation
-  const translatedText = (detectedLang === targetLangCode)
-    ? text
-    : (result?.translation || text);
-
-  const payload = { translatedText, detectedLang };
   cacheSet(cacheKey, payload);
   return payload;
 }
 
-// Kept for backward compatibility with VoiceRecorder
 export async function detectLanguage(text) {
   const { detectedLang } = await detectAndTranslate(text, 'en');
   return detectedLang;

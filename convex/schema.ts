@@ -6,6 +6,7 @@ export default defineSchema({
     email: v.string(),
     fullName: v.string(),
     name: v.optional(v.string()),
+    username: v.optional(v.string()),
     passwordHash: v.string(),
     password: v.optional(v.string()),
     
@@ -21,7 +22,7 @@ export default defineSchema({
       e2eEnabled: v.optional(v.boolean()),
     }),
 
-    updatedAt: v.number(),
+    updatedAt: v.optional(v.number()),
   }).index("by_email", ["email"]),
 
   conversations: defineTable({
@@ -33,7 +34,7 @@ export default defineSchema({
     archivedUserIds: v.optional(v.string()),
     mutedUserIds: v.optional(v.string()),
     typingUserIds: v.optional(v.string()),
-    updatedAt: v.number(),
+    updatedAt: v.optional(v.number()),
   }),
 
   messages: defineTable({

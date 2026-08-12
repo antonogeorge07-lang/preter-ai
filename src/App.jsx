@@ -1,41 +1,49 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
-
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
-import Forge from "./pages/Forge";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import JoinConversation from "./pages/JoinConversation";
-import OAuthConsent from "./pages/OAuthConsent";
-import Legal from "./pages/Legal";
+import Chat from "./pages/Chat";
+
+function OAuthCallback() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    try {
+      // Parse token from hash fragment if redirected from Google
+      const hash = window.location.hash;
+      if (hash && hash.includes("access_token")) {
+        const params = new URLSearchParams(hash.replace("#", "?"));
+        const token = params.get("access_token");
+        if (token) {
+          localStorage.setItem("google_access_token", token);
+          localStorage.setItem("vl_user_email", "google_authenticated_user");
+        }
+      }
+    } catch (err) {
+      console.error("OAuth token parsing error:", err);
+    } finally {
+      navigate("/chat", { replace: true });
+    }
+  }, [navigate, location]);
+
+  return (
+    <div className="min-h-screen bg-[#030712] text-white flex items-center justify-center">
+      <p className="text-sm text-slate-400 animate-pulse">Completing Google Sign-In...</p>
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/join/:code" element={<JoinConversation />} />
-      <Route path="/oauth/consent" element={<OAuthConsent />} />
-      <Route path="/legal" element={<Legal />} />
-      
-      {/* Main Chat & Preter Workspace Route */}
-      <Route
-        path="/chat/*"
-        element={<Forge />}
-      />
-      <Route
-        path="/forge/*"
-        element={<Forge />}
-      />
-
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/chat" element={<Chat />} />
+      <Route path="/auth/callback" element={<OAuthCallback />} />
+      <Route path="*" element={<Landing />} />
     </Routes>
   );
 }

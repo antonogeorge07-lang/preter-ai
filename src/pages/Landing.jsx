@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MessageSquare, Globe, Zap, ArrowRight, ShieldCheck } from "lucide-react";
+import { Globe, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -18,19 +18,19 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen w-full text-foreground relative overflow-hidden" style={{ background: "var(--background)" }}>
+    <div className="min-h-screen w-full text-foreground relative overflow-hidden bg-slate-950 text-white">
       {/* Header */}
       <header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
             <Globe className="w-5 h-5" />
           </div>
-          <span className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+          <span className="text-xl font-bold tracking-tight">
             Preter AI
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
             Sign In
           </Link>
           <Link to="/register" className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-lg shadow-indigo-600/20">
@@ -45,18 +45,17 @@ export default function Landing() {
           <ShieldCheck className="w-4 h-4" /> Real-time Multilingual Communication Platform
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
+        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
           Preter AI
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
           Preter AI is a real-time translation and communication platform designed for global teams and cross-language project management. Translate messages instantaneously across multiple languages while maintaining conversational context.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
           <button
             onClick={handleGoogleSignIn}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl text-sm font-semibold border flex items-center justify-center gap-3 transition-all hover:bg-white/5"
-            style={{ background: "var(--card-bg)", borderColor: "var(--card-border)" }}
+            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl text-sm font-semibold border border-slate-700 bg-slate-900 flex items-center justify-center gap-3 transition-all hover:bg-slate-800"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

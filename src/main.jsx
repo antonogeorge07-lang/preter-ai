@@ -5,7 +5,7 @@ import "./index.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 
 // Clean raw URL string from markdown formatting or accidental quotes
-const rawUrl = import.meta.env.VITE_CONVEX_URL || "https://good-impala-784.eu-west-1.convex.cloud"\;
+const rawUrl = import.meta.env.VITE_CONVEX_URL || "https://good-impala-784.eu-west-1.convex.cloud";
 const cleanUrl = rawUrl.replace(/\[?(https?:\/\/[^\]\s"]+)\]?\(?.*/, "$1").trim();
 
 const convex = new ConvexReactClient(cleanUrl);

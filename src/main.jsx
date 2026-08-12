@@ -1,25 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./index.css";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
-import { BrowserRouter } from "react-router-dom";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { ConvexProvider, ConvexReactClient } from 'convex/react'
+import App from './App'
+import './index.css'
 
-const convexUrl = import.meta.env.VITE_CONVEX_URL || "https://good-impala-784.eu-west-1.convex.cloud";
-const convex = new ConvexReactClient(convexUrl);
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL)
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  React.createElement(
-    React.StrictMode,
-    null,
-    React.createElement(
-      ConvexProvider,
-      { client: convex },
-      React.createElement(
-        BrowserRouter,
-        null,
-        React.createElement(App, null)
-      )
-    )
-  )
-);
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <ConvexProvider client={convex}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ConvexProvider>
+  </React.StrictMode>,
+)

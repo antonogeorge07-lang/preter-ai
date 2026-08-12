@@ -7,8 +7,9 @@ export default defineSchema({
     fullName: v.string(),
     name: v.optional(v.string()),
     username: v.optional(v.string()),
-    passwordHash: v.string(),
+    passwordHash: v.optional(v.string()),
     password: v.optional(v.string()),
+    isDiscoverable: v.optional(v.boolean()),
     
     // Profiles & Audio Preferences
     defaultLanguage: v.string(),
@@ -22,6 +23,7 @@ export default defineSchema({
       e2eEnabled: v.optional(v.boolean()),
     }),
 
+    createdAt: v.optional(v.number()),
     updatedAt: v.optional(v.number()),
   }).index("by_email", ["email"]),
 
@@ -34,6 +36,7 @@ export default defineSchema({
     archivedUserIds: v.optional(v.string()),
     mutedUserIds: v.optional(v.string()),
     typingUserIds: v.optional(v.string()),
+    createdAt: v.optional(v.number()),
     updatedAt: v.optional(v.number()),
   }),
 
@@ -49,6 +52,7 @@ export default defineSchema({
     translatedContent: v.optional(v.string()),
     mediaUrl: v.optional(v.string()),
     mediaType: v.optional(v.string()),
+    createdAt: v.optional(v.number()),
     updatedAt: v.optional(v.number()),
   }).index("by_conversation", ["conversationId"]),
 });

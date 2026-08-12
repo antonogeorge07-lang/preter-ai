@@ -5,14 +5,16 @@ export default defineSchema({
   users: defineTable({
     email: v.string(),
     fullName: v.string(),
+    name: v.optional(v.string()),
     passwordHash: v.string(),
+    password: v.optional(v.string()),
     
     // Profiles & Audio Preferences
     defaultLanguage: v.string(),
     regionalAccent: v.optional(v.string()),
     autoPlayVoiceNotes: v.optional(v.boolean()),
     
-    // Privacy Controls (Optional fields prevent creation errors)
+    // Privacy Controls
     privacySettings: v.object({
       allowDiscoverability: v.optional(v.boolean()),
       storeAudioTranscripts: v.optional(v.boolean()),
@@ -25,6 +27,8 @@ export default defineSchema({
   conversations: defineTable({
     participantIds: v.array(v.string()),
     title: v.optional(v.string()),
+    isGroup: v.optional(v.boolean()),
+    unreadCounts: v.optional(v.string()),
     pinnedUserIds: v.optional(v.string()),
     archivedUserIds: v.optional(v.string()),
     mutedUserIds: v.optional(v.string()),

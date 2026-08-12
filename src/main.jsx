@@ -4,11 +4,14 @@ import App from "./App";
 import "./index.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 
-// Clean raw URL string from markdown formatting or accidental quotes
-const rawUrl = import.meta.env.VITE_CONVEX_URL || "https://good-impala-784.eu-west-1.convex.cloud";
-const cleanUrl = rawUrl.replace(/\[?(https?:\/\/[^\]\s"]+)\]?\(?.*/, "$1").trim();
+let convexUrl = import.meta.env.VITE_CONVEX_URL || "https://good-impala-784.eu-west-1.convex.cloud"\;
 
-const convex = new ConvexReactClient(cleanUrl);
+convexUrl = convexUrl.trim().replace(/^["']|["']$/g, "");
+if (!convexUrl.startsWith("http://") && !convexUrl.startsWith("https://")) {
+  convexUrl = "https://good-impala-784.eu-west-1.convex.cloud";
+}
+
+const convex = new ConvexReactClient(convexUrl);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

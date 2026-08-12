@@ -35,7 +35,7 @@ export default function Login() {
           <div>
             <label className="block text-xs uppercase tracking-wider text-slate-400 mb-1">Email</label>
             <input
-              type="email"
+              type="email" autoComplete="username"
               name="email"
               autoComplete="username"
               required
@@ -48,7 +48,7 @@ export default function Login() {
           <div>
             <label className="block text-xs uppercase tracking-wider text-slate-400 mb-1">Password</label>
             <input
-              type="password"
+              type="password" autoComplete="current-password"
               name="password"
               autoComplete="current-password"
               required

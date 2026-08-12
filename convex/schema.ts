@@ -10,6 +10,7 @@ export default defineSchema({
     username: v.optional(v.string()),
     defaultLanguage: v.optional(v.string()),
     isDiscoverable: v.optional(v.boolean()),
+    privacySettings: v.optional(v.any()),
     createdAt: v.optional(v.number()),
   }).index("by_email", ["email"]),
 

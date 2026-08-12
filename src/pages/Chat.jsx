@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MessageSquare, LogOut, Send, Bot, User, Sparkles } from "lucide-react";
 
 export default function Chat() {
   const navigate = useNavigate();
-  const params = useParams();
   const [userEmail, setUserEmail] = useState("");
   const [messages, setMessages] = useState([
     { id: 1, sender: "bot", text: "Hello! Welcome to Preter AI. How can I help you today?" }
@@ -12,18 +11,22 @@ export default function Chat() {
   const [input, setInput] = useState("");
 
   useEffect(() => {
+    // Strict authentication check
     const storedEmail = localStorage.getItem("vl_user_email");
-    if (!storedEmail) {
-      navigate("/login");
+    const googleToken = localStorage.getItem("google_access_token");
+
+    if (!storedEmail && !googleToken) {
+      // Clear any partial session state and force redirect to login
+      localStorage.clear();
+      navigate("/login", { replace: true });
     } else {
-      setUserEmail(storedEmail);
+      setUserEmail(storedEmail || "Authenticated User");
     }
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("vl_user_email");
-    localStorage.removeItem("google_access_token");
-    navigate("/login");
+    localStorage.clear();
+    navigate("/login", { replace: true });
   };
 
   const handleSend = (e) => {
